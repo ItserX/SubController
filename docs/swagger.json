@@ -1,0 +1,489 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Сервис для управления подписками пользователей",
+        "title": "API сервиса подписок",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/api",
+    "paths": {
+        "/subscriptions": {
+            "get": {
+                "description": "Получить список всех подписок",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Получить список подписок",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.ListSubscriptionsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.FailedToListSubsErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Создать новую подписку с указанными параметрами",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Создать новую подписку",
+                "parameters": [
+                    {
+                        "description": "Данные подписки",
+                        "name": "subscription",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.Subscription"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/types.CreatedResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.InvalidRequestBodyErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.FailedToCreateErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/subscriptions/totalCost": {
+            "get": {
+                "description": "Рассчитать общую стоимость подписок с возможностью фильтрации",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Рассчитать общую стоимость",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"60601fee-2bf1-4721-ae6f-7636e79a0cba\"",
+                        "description": "ID пользователя для фильтрации",
+                        "name": "user_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"Yandex\"",
+                        "description": "Название сервиса для фильтрации",
+                        "name": "service_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"07-2025\"",
+                        "description": "Начальный период в формате ММ-ГГГГ",
+                        "name": "period_start",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"12-2025\"",
+                        "description": "Конечный период в формате ММ-ГГГГ",
+                        "name": "period_end",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.TotalCostResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.InvalidUserIDErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.FailedToCalculateErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/subscriptions/{id}": {
+            "get": {
+                "description": "Получить информацию о подписке по её идентификатору",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Получить подписку по ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0\"",
+                        "description": "ID подписки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.Subscription"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.InvalidIDErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/types.NotFoundErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.FailedToGetSubErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Обновить существующую подписку по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Обновить подписку",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0\"",
+                        "description": "ID подписки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Обновленные данные подписки",
+                        "name": "subscription",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/types.Subscription"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.IDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.InvalidRequestBodyErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/types.NotFoundErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.FailedToUpdateSub"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Удалить подписку по ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Удалить подписку",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "\"8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0\"",
+                        "description": "ID подписки",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.IDResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.InvalidIDErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/types.NotFoundErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/types.FailedToDeleteErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "types.CreatedResponse": {
+            "type": "object",
+            "properties": {
+                "sub_id": {
+                    "type": "string",
+                    "example": "d79c4c83-b0e4-4cc7-a6b1-3f2c5b8c9b76"
+                }
+            }
+        },
+        "types.FailedToCalculateErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to calculate total cost"
+                }
+            }
+        },
+        "types.FailedToCreateErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to create subscription"
+                }
+            }
+        },
+        "types.FailedToDeleteErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to delete subscription"
+                }
+            }
+        },
+        "types.FailedToGetSubErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to get subscription"
+                }
+            }
+        },
+        "types.FailedToListSubsErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to list subscriptions"
+                }
+            }
+        },
+        "types.FailedToUpdateSub": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Failed to update subscription"
+                }
+            }
+        },
+        "types.IDResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0"
+                }
+            }
+        },
+        "types.InvalidIDErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid ID format"
+                }
+            }
+        },
+        "types.InvalidRequestBodyErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid request body"
+                }
+            }
+        },
+        "types.InvalidUserIDErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Invalid user_id format"
+                }
+            }
+        },
+        "types.ListSubscriptionsResponse": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "subscriptions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/types.Subscription"
+                    }
+                }
+            }
+        },
+        "types.NotFoundErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "Subscription not found"
+                }
+            }
+        },
+        "types.PeriodStartRequiredErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "period_start are required"
+                }
+            }
+        },
+        "types.Subscription": {
+            "description": "Информация о подписке",
+            "type": "object",
+            "required": [
+                "price",
+                "service_name",
+                "start_date",
+                "user_id"
+            ],
+            "properties": {
+                "end_date": {
+                    "description": "Опциональная дата окончания подписки в формате ММ-ГГГГ",
+                    "type": "string"
+                },
+                "price": {
+                    "description": "Месячная стоимость в рублях",
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "service_name": {
+                    "description": "Название сервиса",
+                    "type": "string"
+                },
+                "start_date": {
+                    "description": "Дата начала подписки в формате ММ-ГГГГ",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "ID пользователя-владельца подписки",
+                    "type": "string"
+                }
+            }
+        },
+        "types.TotalCostResponse": {
+            "type": "object",
+            "properties": {
+                "total_cost": {
+                    "type": "integer",
+                    "example": 2997
+                }
+            }
+        }
+    }
+}

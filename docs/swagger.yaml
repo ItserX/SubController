@@ -1,0 +1,330 @@
+basePath: /api
+definitions:
+  types.CreatedResponse:
+    properties:
+      sub_id:
+        example: d79c4c83-b0e4-4cc7-a6b1-3f2c5b8c9b76
+        type: string
+    type: object
+  types.FailedToCalculateErrorResponse:
+    properties:
+      error:
+        example: Failed to calculate total cost
+        type: string
+    type: object
+  types.FailedToCreateErrorResponse:
+    properties:
+      error:
+        example: Failed to create subscription
+        type: string
+    type: object
+  types.FailedToDeleteErrorResponse:
+    properties:
+      error:
+        example: Failed to delete subscription
+        type: string
+    type: object
+  types.FailedToGetSubErrorResponse:
+    properties:
+      error:
+        example: Failed to get subscription
+        type: string
+    type: object
+  types.FailedToListSubsErrorResponse:
+    properties:
+      error:
+        example: Failed to list subscriptions
+        type: string
+    type: object
+  types.FailedToUpdateSub:
+    properties:
+      error:
+        example: Failed to update subscription
+        type: string
+    type: object
+  types.IDResponse:
+    properties:
+      id:
+        example: 8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0
+        type: string
+    type: object
+  types.InvalidIDErrorResponse:
+    properties:
+      error:
+        example: Invalid ID format
+        type: string
+    type: object
+  types.InvalidRequestBodyErrorResponse:
+    properties:
+      error:
+        example: Invalid request body
+        type: string
+    type: object
+  types.InvalidUserIDErrorResponse:
+    properties:
+      error:
+        example: Invalid user_id format
+        type: string
+    type: object
+  types.ListSubscriptionsResponse:
+    properties:
+      count:
+        example: 1
+        type: integer
+      subscriptions:
+        items:
+          $ref: '#/definitions/types.Subscription'
+        type: array
+    type: object
+  types.NotFoundErrorResponse:
+    properties:
+      error:
+        example: Subscription not found
+        type: string
+    type: object
+  types.PeriodStartRequiredErrorResponse:
+    properties:
+      error:
+        example: period_start are required
+        type: string
+    type: object
+  types.Subscription:
+    description: Информация о подписке
+    properties:
+      end_date:
+        description: Опциональная дата окончания подписки в формате ММ-ГГГГ
+        type: string
+      price:
+        description: Месячная стоимость в рублях
+        minimum: 0
+        type: integer
+      service_name:
+        description: Название сервиса
+        type: string
+      start_date:
+        description: Дата начала подписки в формате ММ-ГГГГ
+        type: string
+      user_id:
+        description: ID пользователя-владельца подписки
+        type: string
+    required:
+    - price
+    - service_name
+    - start_date
+    - user_id
+    type: object
+  types.TotalCostResponse:
+    properties:
+      total_cost:
+        example: 2997
+        type: integer
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Сервис для управления подписками пользователей
+  title: API сервиса подписок
+  version: "1.0"
+paths:
+  /subscriptions:
+    get:
+      consumes:
+      - application/json
+      description: Получить список всех подписок
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.ListSubscriptionsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.FailedToListSubsErrorResponse'
+      summary: Получить список подписок
+      tags:
+      - Подписки
+    post:
+      consumes:
+      - application/json
+      description: Создать новую подписку с указанными параметрами
+      parameters:
+      - description: Данные подписки
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/types.Subscription'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/types.CreatedResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.InvalidRequestBodyErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.FailedToCreateErrorResponse'
+      summary: Создать новую подписку
+      tags:
+      - Подписки
+  /subscriptions/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Удалить подписку по ID
+      parameters:
+      - description: ID подписки
+        example: '"8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.InvalidIDErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/types.NotFoundErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.FailedToDeleteErrorResponse'
+      summary: Удалить подписку
+      tags:
+      - Подписки
+    get:
+      consumes:
+      - application/json
+      description: Получить информацию о подписке по её идентификатору
+      parameters:
+      - description: ID подписки
+        example: '"8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0"'
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.Subscription'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.InvalidIDErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/types.NotFoundErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.FailedToGetSubErrorResponse'
+      summary: Получить подписку по ID
+      tags:
+      - Подписки
+    put:
+      consumes:
+      - application/json
+      description: Обновить существующую подписку по ID
+      parameters:
+      - description: ID подписки
+        example: '"8d05c8f6-8a7e-4e07-8dc6-07e1b7bafef0"'
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Обновленные данные подписки
+        in: body
+        name: subscription
+        required: true
+        schema:
+          $ref: '#/definitions/types.Subscription'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.IDResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.InvalidRequestBodyErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/types.NotFoundErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.FailedToUpdateSub'
+      summary: Обновить подписку
+      tags:
+      - Подписки
+  /subscriptions/totalCost:
+    get:
+      consumes:
+      - application/json
+      description: Рассчитать общую стоимость подписок с возможностью фильтрации
+      parameters:
+      - description: ID пользователя для фильтрации
+        example: '"60601fee-2bf1-4721-ae6f-7636e79a0cba"'
+        in: query
+        name: user_id
+        type: string
+      - description: Название сервиса для фильтрации
+        example: '"Yandex"'
+        in: query
+        name: service_name
+        type: string
+      - description: Начальный период в формате ММ-ГГГГ
+        example: '"07-2025"'
+        in: query
+        name: period_start
+        required: true
+        type: string
+      - description: Конечный период в формате ММ-ГГГГ
+        example: '"12-2025"'
+        in: query
+        name: period_end
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.TotalCostResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.InvalidUserIDErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/types.FailedToCalculateErrorResponse'
+      summary: Рассчитать общую стоимость
+      tags:
+      - Подписки
+schemes:
+- http
+swagger: "2.0"
