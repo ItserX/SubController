@@ -10,14 +10,13 @@ REST-сервис для агрегации и управления данным
   - Обновление
   - Удаление
   - Список всех подписок
-- Расчет **суммарной стоимости** подписок за период
-- Фильтрация по:
+- Расчет **суммарной стоимости** подписок за период фильтрацией по:
   - ID пользователя
   - Названию сервиса
 - Логирование всех операций
 - Конфигурация через `.env`
 - Swagger-документация
-- Запуск в Docker через `docker-compose`
+- Запуск через `docker-compose`
 
 ## Стек технологий
 - **Go** (Gin, swaggo)
@@ -30,11 +29,11 @@ REST-сервис для агрегации и управления данным
 ## Пример конфигурации
 - SERVER_PORT=8080
 - GIN_MODE=release
-- DB_USER=postgres
-- DB_PASSWORD=postgres
 - DB_HOST=db
 - DB_PORT=5432
-- DB_NAME=subscriptions
+- DB_USER=admin
+- DB_PASSWORD=12345
+- DB_NAME=testdb
 - DB_SSLMODE=disable
 
 ## Запуск через Docker Compose
